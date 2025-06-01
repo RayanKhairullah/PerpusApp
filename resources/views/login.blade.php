@@ -1,5 +1,8 @@
 <x-guest-layout title="Login">
-    <a href="{{ route('home') }}" class="fw-bold fs-1 text-decoration-none text-black">Perpustakaan</a>
+    <a class="navbar-brand fs-1 fw-bold d-flex align-items-center" href="{{ route('home') }}">
+        <img src="{{ asset('assets/images/ic_Logo.png') }}" alt="Logo" width="40" height="40" class="me-2">
+        Perpustakaan
+    </a>
     <h3>Login</h3>
 
     <form action="{{ route('login') }}" method="POST"
