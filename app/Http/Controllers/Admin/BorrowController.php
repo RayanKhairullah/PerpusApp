@@ -7,6 +7,7 @@ use App\Models\Borrow;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon; // Tambahkan ini
 
 class BorrowController extends Controller
 {
@@ -23,6 +24,21 @@ class BorrowController extends Controller
                         $query->where('name', 'LIKE', "%{$request->search}%");
                     });
             });
+        });
+
+        // Logika filter tanggal
+        $borrows->when($request->filter_type, function (Builder $query) use ($request) {
+            if ($request->filter_type === 'daily' && $request->daily_date) {
+                $date = Carbon::parse($request->daily_date);
+                $query->whereDate('borrowed_at', $date);
+            } elseif ($request->filter_type === 'monthly' && $request->monthly_date) {
+                $month = Carbon::parse($request->monthly_date)->month;
+                $year = Carbon::parse($request->monthly_date)->year;
+                $query->whereMonth('borrowed_at', $month)
+                      ->whereYear('borrowed_at', $year);
+            } elseif ($request->filter_type === 'yearly' && $request->yearly_date) {
+                $query->whereYear('borrowed_at', $request->yearly_date);
+            }
         });
 
         $borrows = $borrows->latest('id')->paginate(10);

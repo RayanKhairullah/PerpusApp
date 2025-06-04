@@ -8,13 +8,20 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use App\Models\Restore; // <--- Pastikan ini diimpor
 
 class MemberController extends Controller
 {
     public function index(Request $request)
     {
         $members = User::query()
-            ->where('role', User::ROLES['Member']);
+            ->where('role', User::ROLES['Member'])
+            // Tambahkan ini untuk menghitung total denda
+            ->withSum(['restores as total_fine' => function ($query) {
+                // Hanya menjumlahkan denda yang belum dibayar (status 'Fine not paid')
+                $query->where('status', Restore::STATUSES['Fine not paid']);
+            }], 'fine');
+
 
         $members->when($request->search, function (Builder $query) use ($request) {
             $query->where(function (Builder $q) use ($request) {

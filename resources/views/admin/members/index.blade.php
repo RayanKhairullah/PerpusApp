@@ -20,6 +20,7 @@
                             <th>Tipe Nomor</th>
                             <th>Nomor</th>
                             <th>Telepon</th>
+                            <th>Total Denda</th> {{-- Tambahkan ini --}}
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -30,6 +31,8 @@
                                 <td>{{ $member->number_type }}</td>
                                 <td>{{ $member->number }}</td>
                                 <td>+{{ $member->telephone }}</td>
+                                {{-- Tampilkan total denda yang diformat --}}
+                                <td>Rp{{ number_format($member->total_fine ?? 0, 0, ',', '.') }}</td>
                                 <td class="d-flex">
                                     <a href="{{ route('admin.members.edit', $member) }}"
                                         class="btn btn-link p-0 mx-1">Edit</a>
@@ -45,7 +48,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center">Tidak ada data</td>
+                                <td colspan="6" class="text-center">Tidak ada data</td> {{-- Ubah colspan menjadi 6 --}}
                             </tr>
                         @endforelse
                     </tbody>
